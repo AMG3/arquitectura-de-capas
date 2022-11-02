@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { Cart } from "../models/cart.js";
 
-import productService from "../models/product.js";
+import Product from "../models/product.js";
 import Order from "../models/order.js";
 import userService from "../models/user.js";
 import { sendEmail } from "../handlers/email.js";
@@ -11,7 +11,7 @@ const router = Router();
 
 router.get("/", (req, res, next) => {
   const successMsg = req.flash("success")[0];
-  productService.find((err, docs) => {
+  Product.find((err, docs) => {
     const productChunks = docs.map((doc) => ({
       id: doc.id,
       title: doc.title,
@@ -31,7 +31,7 @@ router.get("/add-to-cart/:id", (req, res, next) => {
   const productId = req.params.id;
   const cart = new Cart(req.session.cart ? req.session.cart : {});
 
-  productService.findById(productId, (err, product) => {
+  Product.findById(productId, (err, product) => {
     if (err) {
       return res.redirect("/");
     }

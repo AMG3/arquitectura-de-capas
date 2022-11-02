@@ -6,6 +6,6 @@ const schema = mongoose.Schema({
   picture: { type: String, required: true },
 });
 
-const productService = mongoose.model("Product", schema);
+const Product = mongoose.model("Product", schema);
 
-export default productService;
+export default Product;
