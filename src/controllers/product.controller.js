@@ -1,25 +1,28 @@
 import { Cart } from "../dao/cart.js";
 import Order from "../dao/order.js";
-import Product from "../dao/product.js";
 import User from "../dao/user.js";
 import { sendEmail } from "../handlers/email.js";
 import { checkoutTemplate } from "../constants/templates.js";
+import { ProductService } from "../services/product.service.js";
+
+const productService = new ProductService();
 
 export async function handleDefault(req, res, next) {
   const successMsg = req.flash("success")[0];
-  Product.find((err, docs) => {
-    const productChunks = docs.map((doc) => ({
-      id: doc.id,
-      title: doc.title,
-      picture: doc.picture,
-      price: doc.price,
-    }));
-    res.render("shop/index", {
-      title: "E-commerce",
-      products: productChunks,
-      successMsg: successMsg,
-      noMessages: !successMsg,
-    });
+  const products = await productService.getProducts();
+
+  const productChunks = products.map(({ id, title, picture, price }) => ({
+    id,
+    title,
+    picture,
+    price,
+  }));
+
+  res.render("shop/index", {
+    title: "E-commerce",
+    products: productChunks,
+    successMsg: successMsg,
+    noMessages: !successMsg,
   });
 }
 
@@ -27,14 +30,14 @@ export async function handleAddToCart(req, res, next) {
   const productId = req.params.id;
   const cart = new Cart(req.session.cart ? req.session.cart : {});
 
-  Product.findById(productId, (err, product) => {
-    if (err) {
-      return res.redirect("/");
-    }
+  try {
+    const product = productService.findById(productId);
     cart.add(product, product.id);
     req.session.cart = cart;
     res.redirect("/");
-  });
+  } catch (error) {
+    return res.redirect("/");
+  }
 }
 
 export async function handleReduceByOne(req, res, next) {
