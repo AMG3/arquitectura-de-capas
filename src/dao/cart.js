@@ -2,7 +2,7 @@ export class Cart {
   constructor(oldCart) {
     this.items = oldCart.items || {};
     this.totalQty = oldCart.totalQty || 0;
-    this.totalPrice = oldCart.totalPrice || 0;
+    this.totalPrice = oldCart.totalPrice.toFixed(2) || 0;
   }
 
   add(item, id) {
@@ -13,14 +13,14 @@ export class Cart {
     storedItem.qty++;
     storedItem.price = storedItem.item.price * storedItem.qty;
     this.totalQty++;
-    this.totalPrice += storedItem.item.price;
+    this.totalPrice += storedItem.item.price.toFixed(2);
   }
 
   reduceByOne(id) {
     this.items[id].qty--;
     this.items[id].price -= this.items[id].item.price;
     this.totalQty--;
-    this.totalPrice -= this.items[id].item.price;
+    this.totalPrice -= this.items[id].item.price.toFixed(2);
 
     if (this.items[id].qty <= 0) {
       delete this.items[id];
@@ -29,7 +29,7 @@ export class Cart {
 
   removeItem(id) {
     this.totalQty -= this.items[id].qty;
-    this.totalPrice -= this.items[id].price;
+    this.totalPrice -= this.items[id].price.toFixed(2);
     delete this.items[id];
   }
 

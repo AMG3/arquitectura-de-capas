@@ -37,7 +37,7 @@ export async function handleAddToCart(req, res, next) {
   const cart = new Cart(req.session.cart ? req.session.cart : {});
 
   try {
-    const product = productService.findById(productId);
+    const product = await productService.findById(productId);
     cart.add(product, product.id);
     req.session.cart = cart;
     res.redirect("/");
@@ -71,7 +71,7 @@ export async function handleShoppingCart(req, res, next) {
   const cart = new Cart(req.session.cart);
   res.render("shop/shopping-cart", {
     products: cart.generateArray(),
-    totalPrice: cart.totalPrice,
+    totalPrice: cart.totalPrice.toFixed(2),
   });
 }
 
@@ -82,7 +82,7 @@ export async function renderCheckout(req, res, next) {
   const cart = new Cart(req.session.cart);
   const errMsg = req.flash("error")[0];
   res.render("shop/checkout", {
-    total: cart.totalPrice,
+    total: cart.totalPrice.toFixed(2),
     errMsg: errMsg,
     noError: !errMsg,
   });
