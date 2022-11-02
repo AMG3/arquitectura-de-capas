@@ -1,12 +1,13 @@
 import { Cart } from "../dao/cart.js";
-import Order from "../dao/order.js";
+import { OrderService } from "../services/order.service.js";
+
+const orderService = new OrderService();
 
 export async function getProfile(req, res) {
-  Order.find({ user: req.user }, (err, orders) => {
-    if (err) {
-      return res.write("Error!");
-    }
+  try {
+    const orders = await orderService.getOrders(req.user);
     const userOrders = [];
+
     orders.forEach((order) => {
       let cart = new Cart(order.cart);
       userOrders.push({
@@ -14,12 +15,15 @@ export async function getProfile(req, res) {
         items: cart.generateArray(),
       });
     });
+
     res.render("user/profile", {
       orders: userOrders,
       userPhoto: `../files/${req.user.photo}`,
       userName: req.user.first_name,
     });
-  });
+  } catch (error) {
+    return res.write("Error!");
+  }
 }
 
 export async function handleLogout(req, res, next) {
