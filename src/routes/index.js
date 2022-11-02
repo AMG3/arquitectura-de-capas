@@ -3,7 +3,7 @@ import { Cart } from "../models/cart.js";
 
 import Product from "../models/product.js";
 import Order from "../models/order.js";
-import userService from "../models/user.js";
+import User from "../models/user.js";
 import { sendEmail } from "../handlers/email.js";
 import { checkoutTemplate } from "../constants/templates.js";
 
@@ -90,7 +90,7 @@ router.post("/checkout", isLoggedIn, function (req, res, next) {
 
   const cart = new Cart(req.session.cart);
 
-  userService.findById(req.session.passport.user, (err, user) => {
+  User.findById(req.session.passport.user, (err, user) => {
     const newOrder = {
       user: req.user,
       cart: cart,

@@ -1,5 +1,5 @@
 import passport from "passport";
-import userService from "../models/user.js";
+import User from "../models/user.js";
 import { Strategy as LocalStrategy } from "passport-local";
 import { body, validationResult } from "express-validator";
 
@@ -8,7 +8,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  userService.findById(id, (err, user) => {
+  User.findById(id, (err, user) => {
     done(err, user);
   });
 });
@@ -34,7 +34,7 @@ passport.use(
         return done(null, false, req.flash("error"));
       }
 
-      userService.findOne({ email: email }, function (err, user) {
+      User.findOne({ email: email }, function (err, user) {
         if (err) {
           return done(err);
         }
@@ -47,7 +47,7 @@ passport.use(
 
         const { first_name, last_name, address, phone_number, age } = req.body;
 
-        const newUser = new userService();
+        const newUser = new User();
         newUser.email = email;
         newUser.password = newUser.encryptPassword(password);
         newUser.first_name = first_name;
@@ -84,7 +84,7 @@ passport.use(
       if (!errors.isEmpty()) {
         return done(null, false, req.flash("error"));
       }
-      userService.findOne({ email: email }, (err, user) => {
+      User.findOne({ email: email }, (err, user) => {
         if (err) {
           return done(err);
         }

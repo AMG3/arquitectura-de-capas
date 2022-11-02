@@ -21,6 +21,6 @@ userSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
 
-const userService = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
-export default userService;
+export default User;
