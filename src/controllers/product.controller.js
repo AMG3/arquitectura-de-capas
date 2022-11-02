@@ -1,29 +1,35 @@
 import { Cart } from "../dao/cart.js";
-import Order from "../dao/order.js";
-import User from "../dao/user.js";
 import { sendEmail } from "../handlers/email.js";
 import { checkoutTemplate } from "../constants/templates.js";
 import { ProductService } from "../services/product.service.js";
+import { UserService } from "../services/user.service.js";
+import { OrderService } from "../services/order.service.js";
 
 const productService = new ProductService();
+const userService = new UserService();
+const orderService = new OrderService();
 
 export async function handleDefault(req, res, next) {
   const successMsg = req.flash("success")[0];
-  const products = await productService.getProducts();
+  try {
+    const products = await productService.getProducts();
 
-  const productChunks = products.map(({ id, title, picture, price }) => ({
-    id,
-    title,
-    picture,
-    price,
-  }));
+    const productChunks = products.map(({ id, title, picture, price }) => ({
+      id,
+      title,
+      picture,
+      price,
+    }));
 
-  res.render("shop/index", {
-    title: "E-commerce",
-    products: productChunks,
-    successMsg: successMsg,
-    noMessages: !successMsg,
-  });
+    res.render("shop/index", {
+      title: "E-commerce",
+      products: productChunks,
+      successMsg: successMsg,
+      noMessages: !successMsg,
+    });
+  } catch (error) {
+    return res.redirect("/");
+  }
 }
 
 export async function handleAddToCart(req, res, next) {
@@ -89,7 +95,8 @@ export async function handleCheckout(req, res, next) {
 
   const cart = new Cart(req.session.cart);
 
-  User.findById(req.session.passport.user, (err, user) => {
+  try {
+    const user = await userService.findById(req.session.passport.user);
     const newOrder = {
       user: req.user,
       cart: cart,
@@ -97,15 +104,14 @@ export async function handleCheckout(req, res, next) {
       name: req.body.name,
       paymentId: Math.random().toString(32),
     };
-    const order = new Order(newOrder);
 
     console.log("Enviado a:", user.email);
     sendEmail(user.email, "Tu orden", checkoutTemplate(newOrder));
-
-    order.save((err, result) => {
-      req.flash("success", "Compra exitosa de producto");
-      req.session.cart = null;
-      res.redirect("/");
-    });
-  });
+    await orderService.save(newOrder);
+    req.flash("success", "Compra exitosa de producto");
+    req.session.cart = null;
+    res.redirect("/");
+  } catch (error) {
+    return res.redirect("/");
+  }
 }

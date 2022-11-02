@@ -10,4 +10,14 @@ export class OrderService {
       throw new Error(error);
     }
   }
+
+  async save(newOrder) {
+    const order = new Order(newOrder);
+    try {
+      await order.save();
+    } catch (error) {
+      logger.error(error);
+      throw new Error(error);
+    }
+  }
 }
