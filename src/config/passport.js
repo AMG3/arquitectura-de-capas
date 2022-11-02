@@ -1,5 +1,5 @@
 import passport from "passport";
-import User from "../models/user.js";
+import User from "../dao/user.js";
 import { Strategy as LocalStrategy } from "passport-local";
 import { body, validationResult } from "express-validator";
 

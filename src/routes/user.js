@@ -4,8 +4,8 @@ import { Router } from "express";
 
 import passport from "passport";
 
-import Order from "../models/order.js";
-import { Cart } from "../models/cart.js";
+import Order from "../dao/order.js";
+import { Cart } from "../dao/cart.js";
 import { upload } from "../middlewares/upload.js";
 
 const router = Router();

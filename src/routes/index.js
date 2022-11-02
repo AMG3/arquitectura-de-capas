@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { Cart } from "../models/cart.js";
+import { Cart } from "../dao/cart.js";
 
-import Product from "../models/product.js";
-import Order from "../models/order.js";
-import User from "../models/user.js";
+import Product from "../dao/product.js";
+import Order from "../dao/order.js";
+import User from "../dao/user.js";
 import { sendEmail } from "../handlers/email.js";
 import { checkoutTemplate } from "../constants/templates.js";
 

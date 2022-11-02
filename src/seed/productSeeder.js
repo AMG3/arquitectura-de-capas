@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import mongoose from "mongoose";
-import Product from "../models/product.js";
+import Product from "../dao/product.js";
 
 mongoose.connect(process.env.MONGODB_URI);
 
