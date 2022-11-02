@@ -8,6 +8,6 @@ const schema = mongoose.Schema({
   paymentId: { type: String, required: true },
 });
 
-const orderService = mongoose.model("Order", schema);
+const Order = mongoose.model("Order", schema);
 
-export default orderService;
+export default Order;

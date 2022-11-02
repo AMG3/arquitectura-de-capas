@@ -4,14 +4,14 @@ import { Router } from "express";
 
 import passport from "passport";
 
-import orderService from "../models/order.js";
+import Order from "../models/order.js";
 import { Cart } from "../models/cart.js";
 import { upload } from "../middlewares/upload.js";
 
 const router = Router();
 
 router.get("/profile", isLoggedIn, (req, res, next) => {
-  orderService.find({ user: req.user }, (err, orders) => {
+  Order.find({ user: req.user }, (err, orders) => {
     if (err) {
       return res.write("Error!");
     }

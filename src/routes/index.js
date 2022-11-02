@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Cart } from "../models/cart.js";
 
 import productService from "../models/product.js";
-import orderService from "../models/order.js";
+import Order from "../models/order.js";
 import userService from "../models/user.js";
 import { sendEmail } from "../handlers/email.js";
 import { checkoutTemplate } from "../constants/templates.js";
@@ -98,7 +98,7 @@ router.post("/checkout", isLoggedIn, function (req, res, next) {
       name: req.body.name,
       paymentId: Math.random().toString(32),
     };
-    const order = new orderService(newOrder);
+    const order = new Order(newOrder);
 
     console.log("Enviado a:", user.email);
     sendEmail(user.email, "Tu orden", checkoutTemplate(newOrder));
